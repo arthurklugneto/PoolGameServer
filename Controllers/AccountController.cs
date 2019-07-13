@@ -4,6 +4,7 @@ using PoolServer.Services;
 using PoolServer.Models;
 using System.Threading.Tasks;
 using PoolGameServer.Entities;
+using System.Text;
 
 namespace PoolServer.Controllers
 {
@@ -37,6 +38,21 @@ namespace PoolServer.Controllers
         {            
             var user = await _userService.Register(registerRequest);
             return Ok(user);
+        }
+
+        [HttpGet("validate")]
+        [AllowAnonymous]
+        public IActionResult Validate(){
+            
+            var accessToken = Request.Headers["Authorization"];
+            if( accessToken.Count == 0 ){
+                return BadRequest("No authorization info provided");
+            }
+            
+            if(!_userService.Validate(accessToken)){
+                return BadRequest("Invalid token");
+            }
+            return Ok("Valid token");
         }
 
     }

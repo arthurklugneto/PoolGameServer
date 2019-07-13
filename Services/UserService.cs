@@ -17,19 +17,19 @@ namespace PoolServer.Services
 {
     public class UserService : IUserService
     {
-        private readonly AppSettings _appSettings;
+        private readonly JWTSettings _jwtSettings;
         private readonly UserRegisterInitialValues _userRegisterInitialValues;
         private readonly IUserRepository _userRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly ICryptographyService _cryptographyService;
 
-        public UserService(IOptions<AppSettings> appSettings,
+        public UserService(IOptions<JWTSettings> jwtSettings,
                            IOptions<UserRegisterInitialValues> userRegisterInitialValues,
                            IUserRepository userRepository,
                            ICryptographyService cryptographyService,
                            IUnitOfWork unitOfWork)
         {
-            _appSettings = appSettings.Value;
+            _jwtSettings = jwtSettings.Value;
             _userRegisterInitialValues = userRegisterInitialValues.Value;
             _userRepository = userRepository;
             _cryptographyService = cryptographyService;
@@ -49,14 +49,17 @@ namespace PoolServer.Services
 
             // authentication successful so generate jwt token
             var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+            var key = Encoding.ASCII.GetBytes(_jwtSettings.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(new Claim[] 
                 {
                     new Claim(ClaimTypes.Name, user.Id.ToString())
                 }),
-                Expires = DateTime.UtcNow.AddDays(7),
+                Issuer = _jwtSettings.Issuer,
+                Audience = _jwtSettings.Audience,
+                IssuedAt = DateTime.UtcNow , 
+                Expires = DateTime.UtcNow.AddMinutes(_jwtSettings.ValidityMinutes),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
@@ -93,12 +96,42 @@ namespace PoolServer.Services
             return user;
         }
 
+        public bool Validate(string token){
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_jwtSettings.Secret);
+
+            var tokenValidator = GetValidationParameters();
+            SecurityToken validatedToken = null;
+            try
+            {
+                var valid = tokenHandler.ValidateToken(token,tokenValidator,out validatedToken);
+                return valid.Identity.IsAuthenticated;    
+            }
+            catch (System.Exception)
+            {
+                return false;
+            }            
+        }
+
         private string getEncryptedPasswordForTokenRequest(TokenRequest tokenRequest){
             return tokenRequest.Password == null ? null : _cryptographyService.GenerateSHA512String(tokenRequest.Password);
         }
 
         private string generateEncryptedPasswordFromRegisterRequest(RegisterRequest registerRequest){
             return registerRequest.Password == null ? null : _cryptographyService.GenerateSHA512String(registerRequest.Password);
+        }
+
+        private TokenValidationParameters GetValidationParameters()
+        {
+            return new TokenValidationParameters()
+            {
+                ValidateLifetime = false, // Because there is no expiration in the generated token
+                ValidateAudience = true, // Because there is no audiance in the generated token
+                ValidateIssuer = true,   // Because there is no issuer in the generated token
+                ValidIssuer = _jwtSettings.Issuer,
+                ValidAudience = _jwtSettings.Audience,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Secret)) // The same key as the one that generate the token
+            };
         }
 
     }

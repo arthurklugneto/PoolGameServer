@@ -37,13 +37,13 @@ namespace PoolGameServer
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             // configure strongly typed settings objects
-            var appSettingsSection = Configuration.GetSection("AppSettings");
+            var appJWTSettings = Configuration.GetSection("JWTSettings");
             var userRegisterInitialValuesSection = Configuration.GetSection("UserRegisterInitialValues");
-            services.Configure<AppSettings>(appSettingsSection);
+            services.Configure<JWTSettings>(appJWTSettings);
             services.Configure<UserRegisterInitialValues>(userRegisterInitialValuesSection);
 
             // configure jwt authentication
-            var appSettings = appSettingsSection.Get<AppSettings>();
+            var appSettings = appJWTSettings.Get<JWTSettings>();
             var key = Encoding.ASCII.GetBytes(appSettings.Secret);
             services.AddAuthentication(x =>
             {
