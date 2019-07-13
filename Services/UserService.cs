@@ -15,6 +15,14 @@ using PoolServer.Models;
 
 namespace PoolServer.Services
 {
+    public interface IUserService
+    {
+        Task<User> Authenticate(TokenRequest tokenRequest);
+        Task<User> Register(RegisterRequest registerRequest);
+        bool Validate(string token);
+
+    }
+
     public class UserService : IUserService
     {
         private readonly JWTSettings _jwtSettings;

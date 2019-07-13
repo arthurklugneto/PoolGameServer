@@ -23,6 +23,8 @@ namespace PoolGameServer
 {
     public class Startup
     {
+        private ConfigurationSection _authSettings;
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -36,14 +38,26 @@ namespace PoolGameServer
             services.AddCors();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            // configure strongly typed settings objects
+            ConfigureFileConfigurations(services);
+            ConfigureAuthentication(services);
+            ConfigureCoreServices(services);
+            ConfigureEntityRepositories(services);
+            ConfigureEntityServices(services);
+
+        }
+
+        private void ConfigureFileConfigurations(IServiceCollection services)
+        {
             var appJWTSettings = Configuration.GetSection("JWTSettings");
             var userRegisterInitialValuesSection = Configuration.GetSection("UserRegisterInitialValues");
+
             services.Configure<JWTSettings>(appJWTSettings);
             services.Configure<UserRegisterInitialValues>(userRegisterInitialValuesSection);
+        }
 
+        private void ConfigureAuthentication(IServiceCollection services){
             // configure jwt authentication
-            var appSettings = appJWTSettings.Get<JWTSettings>();
+            var appSettings = Configuration.GetSection("JWTSettings").Get<JWTSettings>();
             var key = Encoding.ASCII.GetBytes(appSettings.Secret);
             services.AddAuthentication(x =>
             {
@@ -62,19 +76,20 @@ namespace PoolGameServer
                     ValidateAudience = false
                 };
             });
-            
-            services.AddScoped<IMongoContext, MongoContext>();
+        }
+
+        private void ConfigureCoreServices(IServiceCollection services){
+            services.AddScoped<IMongoContext, MongoContext>();  
             services.AddScoped<IUnitOfWork, UnitOfWork>();
-
-            // core
             services.AddScoped<ICryptographyService,CryptographyService>();
+        }
 
-            // repositories
+        private void ConfigureEntityRepositories(IServiceCollection services){
             services.AddScoped<IUserRepository, UserRepository>();
+        }
 
-            // services
+        private void ConfigureEntityServices(IServiceCollection services){
             services.AddScoped<IUserService, UserService>();
-
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

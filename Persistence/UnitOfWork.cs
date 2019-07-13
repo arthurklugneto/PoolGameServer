@@ -1,7 +1,13 @@
+using System;
 using System.Threading.Tasks;
 
 namespace PoolGameServer.Persistence
 {
+    public interface IUnitOfWork : IDisposable
+    {
+        Task<bool> Commit();
+    }
+    
     public class UnitOfWork : IUnitOfWork
     {
         private readonly IMongoContext _context;

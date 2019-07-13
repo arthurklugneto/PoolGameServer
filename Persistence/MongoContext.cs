@@ -10,6 +10,12 @@ using System.Threading.Tasks;
 
 namespace PoolGameServer.Persistence
 {
+    public interface IMongoContext : IDisposable
+    {
+        void AddCommand(Func<Task> func);
+        Task<int> SaveChanges();
+        IMongoCollection<T> GetCollection<T>(string name);
+    }
     public class MongoContext : IMongoContext
     {
         private IMongoDatabase Database { get; set; }
