@@ -1,3 +1,4 @@
+using MongoDB.Bson;
 using MongoDB.Driver;
 using PoolGameServer.Persistence;
 using System;
@@ -22,9 +23,9 @@ namespace PoolGameServer.Repositories
             _context.AddCommand(() => DbSet.InsertOneAsync(obj));
         }
 
-        public virtual async Task<TEntity> GetById(Guid id)
+        public virtual async Task<TEntity> GetById(string id)
         {
-            var data = await DbSet.FindAsync(Builders<TEntity>.Filter.Eq("_id", id));
+            var data = await DbSet.FindAsync(Builders<TEntity>.Filter.Eq("_id", new ObjectId(id)));
             return data.SingleOrDefault();
         }
 

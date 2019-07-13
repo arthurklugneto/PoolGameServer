@@ -1,5 +1,6 @@
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
+using PoolServer.Entities;
 
 namespace PoolGameServer.Entities
 {
@@ -21,6 +22,8 @@ namespace PoolGameServer.Entities
         public string Token { get; set; }
 
         public UserBalance Balance { get; set; }
+
+        public UserExperience Experience { get; set; }
         
         public BsonTimestamp TimeStamp { get; set; }
     }

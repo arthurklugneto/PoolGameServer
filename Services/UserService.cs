@@ -11,6 +11,7 @@ using PoolGameServer.Entities;
 using PoolGameServer.Persistence;
 using PoolGameServer.Repositories;
 using PoolServer.Configurations;
+using PoolServer.Entities;
 using PoolServer.Models;
 
 namespace PoolServer.Services
@@ -20,6 +21,9 @@ namespace PoolServer.Services
         Task<User> Authenticate(TokenRequest tokenRequest);
         Task<User> Register(RegisterRequest registerRequest);
         bool Validate(string token);
+
+        // MOVA ISSO PARA UM FACADE!!!
+        Task<User> GetUserDetails(string UserId);
 
     }
 
@@ -96,6 +100,10 @@ namespace PoolServer.Services
                 Balance = new UserBalance(){
                     CoinsPool = _userRegisterInitialValues.InitialCoins,
                     StarsPool = _userRegisterInitialValues.InitialStars
+                },
+                Experience = new UserExperience(){
+                    Level = 1,
+                    Experience = 0
                 }
             };
 
@@ -112,13 +120,17 @@ namespace PoolServer.Services
             SecurityToken validatedToken = null;
             try
             {
-                var valid = tokenHandler.ValidateToken(token,tokenValidator,out validatedToken);
+                var valid = tokenHandler.ValidateToken(stripBearerFromToken(token),tokenValidator,out validatedToken);
                 return valid.Identity.IsAuthenticated;    
             }
             catch (System.Exception)
             {
                 return false;
             }            
+        }
+
+        private string stripBearerFromToken(string token){
+            return token.Replace("bearer ","");
         }
 
         private string getEncryptedPasswordForTokenRequest(TokenRequest tokenRequest){
@@ -142,5 +154,13 @@ namespace PoolServer.Services
             };
         }
 
+        /*
+            TODO : ADD THIS TO FACADE
+         */
+        public async Task<User> GetUserDetails(string UserId)
+        {
+            var user = await _userRepository.GetById(UserId);
+            return user;
+        }
     }
 }

@@ -50,9 +50,11 @@ namespace PoolGameServer
         {
             var appJWTSettings = Configuration.GetSection("JWTSettings");
             var userRegisterInitialValuesSection = Configuration.GetSection("UserRegisterInitialValues");
+            var serverSettings = Configuration.GetSection("ServerSettings");
 
             services.Configure<JWTSettings>(appJWTSettings);
             services.Configure<UserRegisterInitialValues>(userRegisterInitialValuesSection);
+            services.Configure<ServerSettings>(serverSettings);
         }
 
         private void ConfigureAuthentication(IServiceCollection services){
