@@ -12,3 +12,17 @@
 /TCC/PoolGameServer/obj/Debug/netcoreapp2.1/PoolGameServer.RazorTargetAssemblyInfo.cache
 /TCC/PoolGameServer/obj/Debug/netcoreapp2.1/PoolGameServer.dll
 /TCC/PoolGameServer/obj/Debug/netcoreapp2.1/PoolGameServer.pdb
+E:\PoolServer\bin\Debug\netcoreapp2.1\PoolGameServer.deps.json
+E:\PoolServer\bin\Debug\netcoreapp2.1\PoolGameServer.runtimeconfig.json
+E:\PoolServer\bin\Debug\netcoreapp2.1\PoolGameServer.runtimeconfig.dev.json
+E:\PoolServer\bin\Debug\netcoreapp2.1\PoolGameServer.dll
+E:\PoolServer\bin\Debug\netcoreapp2.1\PoolGameServer.pdb
+E:\PoolServer\obj\Debug\netcoreapp2.1\PoolGameServer.csprojAssemblyReference.cache
+E:\PoolServer\obj\Debug\netcoreapp2.1\PoolGameServer.csproj.CoreCompileInputs.cache
+E:\PoolServer\obj\Debug\netcoreapp2.1\PoolGameServer.RazorAssemblyInfo.cache
+E:\PoolServer\obj\Debug\netcoreapp2.1\PoolGameServer.RazorAssemblyInfo.cs
+E:\PoolServer\obj\Debug\netcoreapp2.1\PoolGameServer.AssemblyInfoInputs.cache
+E:\PoolServer\obj\Debug\netcoreapp2.1\PoolGameServer.AssemblyInfo.cs
+E:\PoolServer\obj\Debug\netcoreapp2.1\PoolGameServer.RazorTargetAssemblyInfo.cache
+E:\PoolServer\obj\Debug\netcoreapp2.1\PoolGameServer.dll
+E:\PoolServer\obj\Debug\netcoreapp2.1\PoolGameServer.pdb

@@ -13,7 +13,12 @@ namespace PoolGameServer.Entities
 
         public string Name { get; set; }
 
+        public string UserName { get; set; }
+
         public string Password { get; set; }
+
+        [BsonIgnore]
+        public string Token { get; set; }
 
         public UserBalance Balance { get; set; }
         
