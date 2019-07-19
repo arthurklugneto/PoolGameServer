@@ -21,10 +21,6 @@ namespace PoolServer.Services
         Task<User> Authenticate(TokenRequest tokenRequest);
         Task<User> Register(RegisterRequest registerRequest);
         bool Validate(string token);
-
-        // MOVA ISSO PARA UM FACADE!!!
-        Task<User> GetUserDetails(string UserId);
-
     }
 
     public class UserService : IUserService
@@ -102,8 +98,26 @@ namespace PoolServer.Services
                     StarsPool = _userRegisterInitialValues.InitialStars
                 },
                 Experience = new UserExperience(){
-                    Level = 1,
                     Experience = 0
+                },
+                Statistics = new UserStatistics(){
+                    Matches = 120,
+                    MatchesWins = 40,
+                    Tournaments = 8,
+                    TournamentsWins = 2,
+                    PocketedBalls = 250
+                },
+                Friends = new UserFriends(){
+                    Friends = new List<User>(),
+                    FriendsIds = new List<string>()
+                },
+                Location = new UserLocation(){
+                    Country = new Country(){
+                        Code = 55,
+                        Name = "Brazil"
+                    },
+                    Hood = "Fazendinha",
+                    City = "Curitiba"
                 }
             };
 
@@ -145,22 +159,14 @@ namespace PoolServer.Services
         {
             return new TokenValidationParameters()
             {
-                ValidateLifetime = false, // Because there is no expiration in the generated token
-                ValidateAudience = true, // Because there is no audiance in the generated token
-                ValidateIssuer = true,   // Because there is no issuer in the generated token
+                ValidateLifetime = false, 
+                ValidateAudience = true, 
+                ValidateIssuer = true,
                 ValidIssuer = _jwtSettings.Issuer,
                 ValidAudience = _jwtSettings.Audience,
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Secret)) // The same key as the one that generate the token
             };
         }
 
-        /*
-            TODO : ADD THIS TO FACADE
-         */
-        public async Task<User> GetUserDetails(string UserId)
-        {
-            var user = await _userRepository.GetById(UserId);
-            return user;
-        }
     }
 }

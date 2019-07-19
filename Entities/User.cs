@@ -1,3 +1,4 @@
+using System;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using PoolServer.Entities;
@@ -24,6 +25,12 @@ namespace PoolGameServer.Entities
         public UserBalance Balance { get; set; }
 
         public UserExperience Experience { get; set; }
+        
+        public UserStatistics Statistics { get; set; }
+        
+        public UserFriends Friends { get; set; }
+
+        public UserLocation Location { get; set; }
         
         public BsonTimestamp TimeStamp { get; set; }
     }

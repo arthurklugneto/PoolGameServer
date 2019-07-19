@@ -18,13 +18,14 @@ using PoolServer.Models;
 using System.Text;
 using PoolServer.Services;
 using PoolServer.Configurations;
+using PoolGameServer.Facades;
+using PoolGameServer.Populators;
+using PoolGameServer.Entities;
 
 namespace PoolGameServer
 {
     public class Startup
     {
-        private ConfigurationSection _authSettings;
-
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -32,7 +33,6 @@ namespace PoolGameServer
 
         public IConfiguration Configuration { get; }
 
-        // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors();
@@ -43,7 +43,9 @@ namespace PoolGameServer
             ConfigureCoreServices(services);
             ConfigureEntityRepositories(services);
             ConfigureEntityServices(services);
-
+            ConfigureEntityFacades(services);
+            ConfigureEntityPopulators(services);
+            
         }
 
         private void ConfigureFileConfigurations(IServiceCollection services)
@@ -94,7 +96,14 @@ namespace PoolGameServer
             services.AddScoped<IUserService, UserService>();
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        private void ConfigureEntityFacades(IServiceCollection services){
+            services.AddScoped<IUserFacade, UserFacade>();
+        }
+
+        private void ConfigureEntityPopulators(IServiceCollection services){
+            services.AddScoped<IPopulator<User>,UserPopulator>();
+        }
+
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
             if (env.IsDevelopment())

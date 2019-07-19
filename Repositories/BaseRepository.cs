@@ -35,12 +35,15 @@ namespace PoolGameServer.Repositories
             return all.ToList();
         }
 
-        public virtual void Update(TEntity obj)
+        public virtual async Task Update(TEntity obj,string id)
         {
-            //_context.AddCommand(() => DbSet.ReplaceOneAsync(Builders<TEntity>.Filter.Eq("_id", obj.GetId()), obj));
+            await DbSet.ReplaceOneAsync(Builders<TEntity>.Filter.Eq("_id", new ObjectId(id)), obj);
         }
 
-        public virtual void Remove(Guid id) => _context.AddCommand(() => DbSet.DeleteOneAsync(Builders<TEntity>.Filter.Eq("_id", id)));
+        public virtual async Task Remove(string id)
+        {
+            await DbSet.DeleteOneAsync(Builders<TEntity>.Filter.Eq("_id", new ObjectId(id)));
+        }
 
         public void Dispose()
         {
